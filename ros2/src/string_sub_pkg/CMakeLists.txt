@@ -1,0 +1,78 @@
+cmake_minimum_required(VERSION 3.8)
+project(string_sub_pkg)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
+
+# Install Text Subscriber
+add_executable(text_subscriber src/text_subscriber.cpp)
+
+ament_target_dependencies(text_subscriber
+  rclcpp
+  std_msgs
+)
+
+# Install Img Subscriber
+add_executable(img_subscriber src/img_subscriber.cpp)
+
+ament_target_dependencies(img_subscriber
+  rclcpp
+  sensor_msgs
+  cv_bridge
+)
+
+target_include_directories(img_subscriber PRIVATE
+  ${OpenCV_INCLUDE_DIRS}
+)
+
+target_link_libraries(img_subscriber
+  ${OpenCV_LIBS}
+)
+
+# Install Subscriber
+add_executable(subscriber src/subscriber.cpp)
+
+ament_target_dependencies(subscriber
+  rclcpp
+  std_msgs
+  sensor_msgs
+  cv_bridge
+)
+
+target_include_directories(subscriber PRIVATE
+  ${OpenCV_INCLUDE_DIRS}
+)
+
+target_link_libraries(subscriber
+  ${OpenCV_LIBS}
+)
+
+install(TARGETS
+  text_subscriber
+  img_subscriber
+  subscriber
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following line skips the linter which checks for copyrights
+  # comment the line when a copyright and license is added to all source files
+  set(ament_cmake_copyright_FOUND TRUE)
+  # the following line skips cpplint (only works in a git repo)
+  # comment the line when this package is in a git repo and when
+  # a copyright and license is added to all source files
+  set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_package()

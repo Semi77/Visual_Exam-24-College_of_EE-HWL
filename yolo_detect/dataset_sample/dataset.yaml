@@ -1,0 +1,11 @@
+path: C:/Users/28478/Desktop/Run_Auto/Run_Auto/Works/yolo_dataset
+
+train: images/train
+val: images/val
+
+names:
+  0: lane
+  1: jump
+  2: roll
+  3: must_hit
+  4: optional_pickup
